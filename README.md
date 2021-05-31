@@ -46,3 +46,11 @@ In the source code:
 ```cpp
 #include <libx/Timer.h>
 ```
+
+## Code style
+
+Use clang-format to control the code style.
+
+```sh
+sh script/check_style.sh
+```

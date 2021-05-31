@@ -18,9 +18,9 @@ TEST_CASE("testing the Timer.h")
     Timer timer2("ms");
     Timer timer3("s");
 
-    auto sleepDuration = std::chrono::milliseconds{1000};
+    auto sleepDuration = std::chrono::milliseconds{ 1000 };
     std::this_thread::sleep_for(sleepDuration);
-    
+
     CHECK(timer1.toc() >= 1000000);
     CHECK(timer2.toc() >= 1000);
     CHECK(timer3.toc() >= 1);
