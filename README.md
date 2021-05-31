@@ -44,7 +44,7 @@ $./bin/unittest
 In the source code:
 
 ```cpp
-#include <libx/Timer.h>
+#include <libx/Timer.hpp>
 ```
 
 ## Code style

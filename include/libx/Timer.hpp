@@ -11,6 +11,8 @@
 #include <thread>
 #include <string>
 
+namespace libx {
+
 class Timer
 {
 public:
@@ -55,3 +57,5 @@ private:
     std::string unit;
     unsigned int div;
 };
+
+} // namespace libx
