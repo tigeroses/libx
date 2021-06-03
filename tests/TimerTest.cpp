@@ -5,14 +5,13 @@
  * Author: tigeroses
  */
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
 
 #include "libx/Timer.hpp"
+using libx::Timer;
 
 #include <thread>
 
-using libx::Timer;
+#include <doctest.h>
 
 TEST_CASE("testing the Timer")
 {
