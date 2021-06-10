@@ -18,7 +18,7 @@ using std::vector;
 
 #include <doctest.h>
 
-TEST_CASE("testing function split()")
+TEST_CASE("testing function split")
 {
     SUBCASE("char delim")
     {
@@ -75,19 +75,42 @@ TEST_CASE("testing function split()")
         CHECK(res[0].empty());
         CHECK(res[1].empty());
     }
+}
 
-    // SUBCASE("integer as ouput")
-    // {
-    //     string in = "1:2:34:567";
-    //     vector<int> res;
-    //     split(in, res, ':');
-    //     CHECK(res.size() == 4);
-    // }
+TEST_CASE("testing function split fixed")
+{
+    SUBCASE("integer as ouput")
+    {
+        string in = "1:2:34:567";
+        int a,b,c,d;
+        CHECK(split(in, ':', a, b, c, d));
+        CHECK(a == 1);
+        CHECK(b == 2);
+        CHECK(c == 34);
+        CHECK(d == 567);
+    }
 
-    // SUBCASE("float as ouput")
-    // {
+    SUBCASE("conversion exception")
+    {
+        string in = "23333333333";
+        int a;
+        CHECK_THROWS_AS(split(in, ':', a), const std::exception&);
+    }
+    
+    SUBCASE("multiple output types")
+    {
+        string in = "1:2.0:23333333333:abc";
+        int a;
+        float b;
+        long long c;
+        string d;
         
-    // }
+        CHECK(split(in, ':', a, b, c, d));
+        CHECK(a == 1);
+        CHECK(b == 2.0);
+        CHECK(c == 23333333333);
+        CHECK(d == "abc");
+    }
 }
 
 // TEST_CASE("testing performance of split()")

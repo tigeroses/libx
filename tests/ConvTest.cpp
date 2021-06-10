@@ -5,7 +5,7 @@
  * Author: tigeroses
  */
 
-#include "libx/Conv.hpp"
+#include <libx/Conv.hpp>
 
 #include <doctest.h>
 
@@ -20,8 +20,5 @@ TEST_CASE("test function to()")
     CHECK(libx::to<unsigned long>(str) == 123);
     CHECK(libx::to<long long>(str) == 123);
     CHECK(libx::to<unsigned long long>(str) == 123);
-
-    // Convert numerical value to string
-    CHECK(libx::to(123) == "123");
-    CHECK(libx::to(123.456) == "123.456000");
+    CHECK(libx::to<std::string>(str) == "123");
 }

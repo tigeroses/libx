@@ -17,56 +17,56 @@ TgtType to(const std::string& src)
     return TgtType();
 }
 
-template<class SrcType>
-std::string to(const SrcType& src)
+template<>
+inline std::string to(const std::string& src)
 {
-    return std::to_string(src);
+    return src;
 }
 
 template<>
-int to(const std::string& src)
+inline int to(const std::string& src)
 {
     return std::stoi(src);
 }
 
 template<>
-float to(const std::string& src)
+inline float to(const std::string& src)
 {
     return std::stof(src);
 }
 
 template<>
-double to(const std::string& src)
+inline double to(const std::string& src)
 {
     return std::stod(src);
 }
 
 template<>
-long to(const std::string& src)
+inline long to(const std::string& src)
 {
     return std::stol(src);
 }
 
 template<>
-long double to(const std::string& src)
+inline long double to(const std::string& src)
 {
     return std::stold(src);
 }
 
 template<>
-long long to(const std::string& src)
+inline long long to(const std::string& src)
 {
     return std::stoll(src);
 }
 
 template<>
-unsigned long to(const std::string& src)
+inline unsigned long to(const std::string& src)
 {
     return std::stoul(src);
 }
 
 template<>
-unsigned long long to(const std::string& src)
+inline unsigned long long to(const std::string& src)
 {
     return std::stoull(src);
 }

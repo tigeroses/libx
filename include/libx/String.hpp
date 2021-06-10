@@ -9,6 +9,8 @@
 
 // String utilities that process std::string
 
+#include <libx/Conv.hpp>
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -59,6 +61,35 @@ void internalSplit(const std::string& str,
         out.push_back(tmp);
 }
 
+template<class Delim, class OutputType>
+bool splitFixed(const std::string& str,
+    const Delim& delim, OutputType& output)
+{
+    if (std::string::npos != str.find(delim))
+        return false;
+
+    output = libx::to<OutputType>(str);
+    return true;
+}
+
+template<class Delim, class OutputType, class... OutputTypes>
+bool splitFixed(const std::string& str, 
+    const Delim& delim, OutputType& outHead, OutputTypes&... output)
+{
+    size_t cut = str.find(delim);
+    if (cut == std::string::npos)
+        return false;
+    
+    std::string head(str.begin(), str.begin()+cut);
+    std::string tail(str.begin() + cut + delimSize(delim), str.end());
+    if (splitFixed(tail, delim, output...))
+    {
+        outHead = libx::to<OutputType>(head);
+        return true;
+    }
+    return false;
+}
+
 } // namespace detail
 
 template <class Delim, class OutputType>
@@ -73,6 +104,18 @@ void split(
         out,
         detail::prepareDelim(delim),  
         skipEmpty);
+}
+
+template<class Delim, class... OutputTypes>
+bool split(
+    const std::string& input,
+    const Delim& delim=' ',
+    OutputTypes&... outputs)
+{
+    return detail::splitFixed(
+        input,
+        detail::prepareDelim(delim),
+        outputs...);
 }
 
 } // namespace libx
