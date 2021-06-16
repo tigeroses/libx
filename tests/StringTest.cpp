@@ -24,7 +24,7 @@ TEST_CASE("testing function split")
     {
         string in = "a:bc:def::g:";
         vector<string> res;
-        split(in, res, ':');
+        split(in, ':', res);
         CHECK(res.size() == 4);
         CHECK(res[0] == "a");
         CHECK(res[1] == "bc");
@@ -36,7 +36,7 @@ TEST_CASE("testing function split")
     {
         string in = "a:bc:def::g:";
         vector<string> res;
-        split(in, res, ":");
+        split(in, ":", res);
         CHECK(res.size() == 4);
         CHECK(res[0] == "a");
         CHECK(res[1] == "bc");
@@ -48,7 +48,7 @@ TEST_CASE("testing function split")
     {
         string in = "   a b  cd      efg    h ";
         vector<string> res{"1", "2", "3", "4"};
-        split(in, res, "  ");
+        split(in, "  ", res);
         CHECK(res.size() == 8);
         CHECK(res[4] == " a b");
         CHECK(res[5] == "cd");
@@ -60,7 +60,7 @@ TEST_CASE("testing function split")
     {
         string in = "";
         vector<string> res;
-        split(in, res, ' ');
+        split(in, ' ', res);
         CHECK(res.size() == 0);
     }
 
@@ -68,12 +68,24 @@ TEST_CASE("testing function split")
     {
         string in = "a";
         vector<string> res;
-        split(in, res, 'a');
+        split(in, 'a', res);
         CHECK(res.size() == 0);
-        split(in, res, 'a', false);
+        split(in, 'a', res, false);
         CHECK(res.size() == 2);
         CHECK(res[0].empty());
         CHECK(res[1].empty());
+    }
+
+    SUBCASE("integer as ouput")
+    {
+        string in = "1:2:34:567";
+        vector<int> res;
+        split(in, ':', res);
+        CHECK(res.size() == 4);
+        CHECK(res[0] == 1);
+        CHECK(res[1] == 2);
+        CHECK(res[2] == 34);
+        CHECK(res[3] == 567);
     }
 }
 

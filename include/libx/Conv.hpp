@@ -5,6 +5,14 @@
  * Author: tigeroses
  */
 
+/*
+ * This file provides a generic interface for converting objects from std::string
+ * to numeric types.
+ * 
+ * Parsing a string into a C++ numeric type, for example,
+ * to<int>("123"); // returns 123
+ */
+
 #pragma once
 
 #include <string>

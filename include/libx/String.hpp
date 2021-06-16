@@ -5,9 +5,36 @@
  * Author: tigeroses
  */
 
-#pragma once
+// String utilities that process std::string.
+// 
+// There are two methods for splitting a string into a list of tokens by delimiter.
+//
+// The first interface supports different output types, selected at compile time:
+// std::string, int, float, double, etc. It detects the type based on what your
+// vector contains. If the output vector is not empty, the split will append to the
+// end of the vector. Examples:
+//
+//      std::vector<std::string> v;
+//      libx::split("a:bc:def", ':', v);
+//
+//      std::vector<int> v;
+//      libx::split("1\t23\t456\t", '\t', v);
+//
+// Split also takes a flag (skipEmpty) that indicates whether adjacent delimiters
+// should be treated as one single separator or not.
+//
+// The second interface split a string into a fixed number of string pieces
+// and/or numeric types by delimiter. Conversions are supported for any type
+// which libx::to<> can target. Returns 'true' if the fields were all successfully
+// populated. Casting exceptions will not be caught. Examples:
+//
+//      std::string a;
+//      int b;
+//      double c;
+//      if (libx::split("abc 123 45.678", " ", a, b, c))
+//          ...
 
-// String utilities that process std::string
+#pragma once
 
 #include <libx/Conv.hpp>
 
@@ -39,8 +66,8 @@ inline size_t delimSize(std::string& s)
 }
 
 template <class OutputType, class Delim>
-void internalSplit(const std::string& str, 
-    std::vector<OutputType>& out, Delim delim, bool skip_empty)
+void internalSplit(const std::string& str, Delim delim,
+    std::vector<OutputType>& out, bool skip_empty)
 {
     const size_t dSize = delimSize(delim);
     std::string::size_type pos1, pos2;
@@ -51,14 +78,14 @@ void internalSplit(const std::string& str,
     {
         auto tmp = str.substr(pos1, pos2 - pos1);
         if (!skip_empty || !tmp.empty())
-            out.push_back(tmp);
+            out.push_back(to<OutputType>(tmp));
 
         pos1 = pos2 + dSize;
         pos2 = str.find(delim, pos1);
     }
     auto tmp = str.substr(pos1);
     if (!skip_empty || !tmp.empty())
-        out.push_back(tmp);
+        out.push_back(to<OutputType>(tmp));
 }
 
 template<class Delim, class OutputType>
@@ -94,15 +121,15 @@ bool splitFixed(const std::string& str,
 
 template <class Delim, class OutputType>
 void split(
-    const std::string& input, 
+    const std::string& input,
+    const Delim& delim, 
     std::vector<OutputType>& out, 
-    const Delim& delim=' ', 
     bool skipEmpty=true)
 {
     detail::internalSplit<OutputType>(
         input,
-        out,
         detail::prepareDelim(delim),  
+        out,
         skipEmpty);
 }
 
