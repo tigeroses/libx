@@ -17,7 +17,7 @@ TEST_CASE("testing class of ThreadPool")
 {
     SUBCASE("simple threads")
     {
-        libx::Timer timer("ms");
+        libx::Timer      timer("ms");
         libx::ThreadPool thpool(2);
 
         auto worker = [](int num) {
@@ -26,8 +26,8 @@ TEST_CASE("testing class of ThreadPool")
 
             return num;
         };
-        
-        std::vector<std::future<int>> results;
+
+        std::vector< std::future< int > > results;
         results.emplace_back(thpool.commit(worker, 1000));
         results.emplace_back(thpool.commit(worker, 1500));
         results.emplace_back(thpool.commit(worker, 2000));
@@ -39,8 +39,8 @@ TEST_CASE("testing class of ThreadPool")
             total += result.get();
         }
 
-        CHECK(total == (1000+1500+2000+2500));
-        CHECK(timer.toc() == (1500+2500));
+        CHECK(total == (1000 + 1500 + 2000 + 2500));
+        CHECK(timer.toc() == (1500 + 2500));
     }
 
     SUBCASE("class member function")
@@ -63,13 +63,13 @@ TEST_CASE("testing class of ThreadPool")
             }
         };
 
-        libx::Timer timer("ms");
+        libx::Timer      timer("ms");
         libx::ThreadPool thpool(2);
         CHECK(thpool.idlCount() == 2);
         CHECK(thpool.thrCount() == 2);
 
-        std::vector<std::future<int>> results;
-        A a;
+        std::vector< std::future< int > > results;
+        A                                 a;
         results.emplace_back(thpool.commit(A::f1, 1000));
         results.emplace_back(thpool.commit(A::f1, 1500));
         results.emplace_back(thpool.commit(std::bind(&A::f2, a, 2000)));
@@ -84,7 +84,7 @@ TEST_CASE("testing class of ThreadPool")
         CHECK(thpool.thrCount() == 2);
         CHECK(thpool.idlCount() == 2);
 
-        CHECK(total == (1000+1500+2000+2500));
-        CHECK(timer.toc() == (1500+2500));
-    } 
+        CHECK(total == (1000 + 1500 + 2000 + 2500));
+        CHECK(timer.toc() == (1500 + 2500));
+    }
 }

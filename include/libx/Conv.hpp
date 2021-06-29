@@ -6,9 +6,9 @@
  */
 
 /*
- * This file provides a generic interface for converting objects from std::string
- * to numeric types.
- * 
+ * This file provides a generic interface for converting objects from
+ * std::string to numeric types.
+ *
  * Parsing a string into a C++ numeric type, for example,
  * to<int>("123"); // returns 123
  */
@@ -17,87 +17,88 @@
 
 #include <string>
 
-namespace libx {
+namespace libx
+{
 
 // Convert numerical types to std::string
 // Warning: keep in mind there is six precision for float type
-template<class SrcType>
+template < class SrcType >
 std::string toStr(SrcType src)
 {
     return std::to_string(src);
 }
 
-template<>
+template <>
 inline std::string toStr(std::string src)
 {
     return src;
 }
 
-template<>
+template <>
 inline std::string toStr(const char* src)
 {
     return std::string(src);
 }
 
 // Convert std::string to numerical types
-template<class TgtType>
+template < class TgtType >
 TgtType to(const std::string& src)
 {
     return TgtType();
 }
 
-template<>
+template <>
 inline std::string to(const std::string& src)
 {
     return src;
 }
 
-template<>
+template <>
 inline int to(const std::string& src)
 {
     return std::stoi(src);
 }
 
-template<>
+template <>
 inline float to(const std::string& src)
 {
     return std::stof(src);
 }
 
-template<>
+template <>
 inline double to(const std::string& src)
 {
     return std::stod(src);
 }
 
-template<>
+template <>
 inline long to(const std::string& src)
 {
     return std::stol(src);
 }
 
-template<>
+template <>
 inline long double to(const std::string& src)
 {
     return std::stold(src);
 }
 
-template<>
+template <>
 inline long long to(const std::string& src)
 {
     return std::stoll(src);
 }
 
-template<>
+template <>
 inline unsigned long to(const std::string& src)
 {
     return std::stoul(src);
 }
 
-template<>
+template <>
 inline unsigned long long to(const std::string& src)
 {
     return std::stoull(src);
 }
 
-} // namespace libx
+}  // namespace libx

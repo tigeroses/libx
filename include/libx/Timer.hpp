@@ -6,9 +6,9 @@
  */
 
 // Timer is a tool for timing code blocks.
-// 
+//
 // You can init the Timer with a timing unit, selected at:
-// "s", "ms", "mics", the default unit is second. Use Timer::tic() to start a 
+// "s", "ms", "mics", the default unit is second. Use Timer::tic() to start a
 // new timer, Timer::toc() to end the timer and return the duration. Examples:
 //
 //      Timer t1("s");
@@ -18,15 +18,17 @@
 #pragma once
 
 #include <mutex>
-#include <thread>
 #include <string>
+#include <thread>
 
-namespace libx {
+namespace libx
+{
 
 class Timer
 {
 public:
-    Timer(std::string unit="s") : unit(unit), start_time(mics_duration::zero())
+    Timer(std::string unit = "s")
+        : unit(unit), start_time(mics_duration::zero())
     {
         if (unit == "s")
             div = 1e6;
@@ -36,7 +38,7 @@ public:
             div = 1;
         else
             div = 1e6;
-        
+
         tic();
     }
 
@@ -51,9 +53,10 @@ public:
     // Calculate the duration after last tic(), and start a new timer
     inline size_t toc()
     {
-        size_t duration = 
-            std::chrono::duration_cast< mics_duration >(clock::now() - start_time).count() / div;
-        
+        // clang-format off
+        size_t duration = std::chrono::duration_cast< mics_duration >(
+                              clock::now() - start_time).count() / div;
+        // clang-format on
         tic();
 
         return duration;
@@ -65,8 +68,8 @@ private:
 
     clock::time_point start_time;
 
-    std::string unit;
+    std::string  unit;
     unsigned int div;
 };
 
-} // namespace libx
+}  // namespace libx

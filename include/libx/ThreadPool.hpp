@@ -10,9 +10,9 @@
 /*
  * ThreadPool is a thread pool for executing parallel tasks.
  *
- * You can init the pool with a specific size, then commit some tasks, finally 
+ * You can init the pool with a specific size, then commit some tasks, finally
  * get the results of tasks, for example,
- * 
+ *
  * ThreadPool thpool(20);
  *
  * vector<future<int>> results;
@@ -22,7 +22,7 @@
  * for (auto& result : results)
  *     int num = result.get();
  *
- * For class static member function, use 
+ * For class static member function, use
  * .commit(std::bind(&Dog::sayHello, &dog));
  * For class ordinary member function, use
  * .commit(Dog::sayHello);
@@ -31,27 +31,28 @@
 #pragma once
 
 #include <atomic>
+#include <cassert>
+#include <condition_variable>
+#include <functional>
 #include <future>
 #include <queue>
-#include <vector>
-#include <condition_variable>
-#include <thread>
-#include <functional>
 #include <stdexcept>
-#include <cassert>
+#include <thread>
+#include <vector>
 
-namespace libx {
+namespace libx
+{
 
 class ThreadPool
 {
 private:
-    using Task = std::function< void() >;    
-    std::vector< std::thread >   _pool;      
-    std::queue< Task >      _tasks;          
-    std::mutex              _lock;           
-    std::condition_variable _task_cv;        
-    std::atomic< bool >     _run{ true };    
-    std::atomic< int >      _idlThrNum{ 0 }; 
+    using Task = std::function< void() >;
+    std::vector< std::thread > _pool;
+    std::queue< Task >         _tasks;
+    std::mutex                 _lock;
+    std::condition_variable    _task_cv;
+    std::atomic< bool >        _run{ true };
+    std::atomic< int >         _idlThrNum{ 0 };
 
 public:
     inline ThreadPool(unsigned short size)
@@ -72,7 +73,7 @@ public:
 
 public:
     // Commit a task with a function and arguments
-    template < class F, class... Args > 
+    template < class F, class... Args >
     auto commit(F&& f, Args&&... args) -> std::future< decltype(f(args...)) >
     {
         if (!_run)
@@ -82,12 +83,10 @@ public:
         auto task     = std::make_shared< std::packaged_task< RetType() > >(
             std::bind(std::forward< F >(f), std::forward< Args >(args)...));
         std::future< RetType > future = task->get_future();
-        {  
+        {
             // Add a task to the queue
             std::lock_guard< std::mutex > lock{ _lock };
-            _tasks.emplace([task]() {
-                (*task)();
-            });
+            _tasks.emplace([task]() { (*task)(); });
         }
 
         _task_cv.notify_one();  // wake up a thread to execute the task
@@ -119,7 +118,9 @@ private:
                     Task task;  // get a task to be executed
                     {
                         std::unique_lock< std::mutex > lock{ _lock };
-                        _task_cv.wait(lock, [this] { return !_run || !_tasks.empty(); });  // wait 直到有 task
+                        _task_cv.wait(lock, [this] {
+                            return !_run || !_tasks.empty();
+                        });  // wait 直到有 task
                         if (!_run && _tasks.empty())
                             return;
                         task = std::move(_tasks.front());
