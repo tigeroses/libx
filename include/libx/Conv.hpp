@@ -19,6 +19,27 @@
 
 namespace libx {
 
+// Convert numerical types to std::string
+// Warning: keep in mind there is six precision for float type
+template<class SrcType>
+std::string toStr(SrcType src)
+{
+    return std::to_string(src);
+}
+
+template<>
+inline std::string toStr(std::string src)
+{
+    return src;
+}
+
+template<>
+inline std::string toStr(const char* src)
+{
+    return std::string(src);
+}
+
+// Convert std::string to numerical types
 template<class TgtType>
 TgtType to(const std::string& src)
 {

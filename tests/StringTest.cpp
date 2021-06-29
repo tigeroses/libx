@@ -5,6 +5,7 @@
  * Author: tigeroses
  */
 
+#include "libx/Conv.hpp"
 #include "libx/String.hpp"
 #include "libx/Timer.hpp"
 using libx::split;
@@ -17,6 +18,24 @@ using std::string;
 using std::vector;
 
 #include <doctest.h>
+
+
+struct ST
+{
+    ST(int i_, std::string s_): i(i_), s(s_) {}
+    int i;
+    std::string s;
+};
+// Implement libx::toStr(SrcType) for using libx::join
+namespace libx {
+template<>
+inline std::string toStr(ST st)
+{
+    return toStr(st.i) + "_" + st.s;
+}
+} // namespace libx
+
+TEST_SUITE_BEGIN("testing split strings");
 
 TEST_CASE("testing function split")
 {
@@ -125,16 +144,83 @@ TEST_CASE("testing function split fixed")
     }
 }
 
-// TEST_CASE("testing performance of split()")
-// {
-//     Timer timer("ms");
-//     string in = "NOC2L\t93277\t37070\t1";
-//     int times = 5000000;
-//     vector<string> res;
-//     while (times-- > 0)
-//     {
-//         res.clear();
-//         split(in, res, '\t');
-//     }
-//     std::cout<<"time1: "<<timer.toc()<<std::endl;
-// }
+TEST_CASE("testing performance of split()"
+          * doctest::skip(true))
+{
+    Timer timer("ms");
+    string in = "NOC2L\t93277\t37070\t1";
+    int times = 5000000;
+    vector<string> res;
+    while (times-- > 0)
+    {
+        res.clear();
+        split(in, '\t', res);
+    }
+    std::cout<<"time split: "<<timer.toc()<<std::endl;
+}
+
+TEST_SUITE_END();
+
+
+TEST_SUITE("testing join into string")
+{
+    TEST_CASE("same type as inputs")
+    {
+        std::string out;
+        SUBCASE("string type and char delimiter")
+        {
+            std::vector<std::string> inputs{"a", "bc", "def"};
+            libx::join(inputs, ' ', out);
+            CHECK(out == "a bc def");
+        }
+        SUBCASE("string type and string delimiter")
+        {
+            libx::join({"a", "bc", "def"}, "__", out);
+            CHECK(out == "a__bc__def");
+        }
+        SUBCASE("int type")
+        {
+            libx::join({1,23,456}, '\t', out);
+            CHECK(out == "1\t23\t456");
+        }
+        SUBCASE("float type")
+        {
+            libx::join({1.01,23.888,456.789987}, ',', out);
+            CHECK(out == "1.010000,23.888000,456.789987");
+        }
+        
+        SUBCASE("user-defined type")
+        {
+            ST st1(1, "abc"), st2(2, "def");
+            CHECK(libx::join({st1, st2}, " ") == "1_abc 2_def");
+        }
+        SUBCASE("empty input")
+        {
+            std::vector<int> inputs;
+            CHECK(libx::join(inputs, ' ').empty());
+        }
+        SUBCASE("single input")
+        {
+            CHECK(libx::join({"abc"}, ' ') == "abc");
+        }
+    }
+
+    TEST_CASE("different type as inputs")
+    {
+        SUBCASE("simple test")
+        {
+            int i = 10;
+            std::string s = "libx";
+            CHECK(libx::join(' ', i, s) == "10 libx");
+        }
+        SUBCASE("simple test")
+        {
+            std::string out;
+            int i = 10;
+            float f = 3.33;
+            std::string s = "libx";
+            out = libx::join(' ', i, f, s);
+            CHECK(out == "10 3.330000 libx");
+        }
+    }
+}
