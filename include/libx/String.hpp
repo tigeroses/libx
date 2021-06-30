@@ -12,6 +12,7 @@
 
 #include <libx/Conv.hpp>
 
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -135,6 +136,11 @@ namespace detail
         joinFixed(delim, out, inputs...);
     }
 
+    static inline bool isOddSpace(const char c)
+    {
+        return (c == '\t' || c == '\n' || c == '\r');
+    }
+
 }  // namespace detail
 
 // There are two methods for splitting a string into a list of tokens by
@@ -250,6 +256,88 @@ std::string join(const Delim& delim, InputTypes&... input)
     std::string out;
     detail::joinFixed(detail::prepareDelim(delim), out, input...);
     return out;
+}
+
+// Remove substring from the front or back of string
+// for whitespace, means any of [' ', '\n', '\t', '\r']
+// for other characters, the user should provide a function or lambda expression
+// to check how to trim string, for example:
+//
+//      auto toTrim = [](const char c) { return (c == 'a' || c == 'b') };
+
+// Returns a substring with all whitespace removed from the front of string
+std::string ltrimWhitespace(const std::string& s)
+{
+    std::string s_(s);
+    while (true)
+    {
+        while (!s.empty() && s_.front() == ' ')
+            s_.erase(s_.begin());
+        if (detail::isOddSpace(s_.front()))
+        {
+            s_.erase(s_.begin());
+            continue;
+        }
+        return s_;
+    }
+}
+
+// Returns a substring with all whitespace removed from the back of string
+std::string rtrimWhitespace(const std::string& s)
+{
+    std::string s_(s);
+    while (true)
+    {
+        while (!s.empty() && s_.back() == ' ')
+            s_.pop_back();
+        if (detail::isOddSpace(s_.back()))
+        {
+            s_.pop_back();
+            continue;
+        }
+        return s_;
+    }
+}
+
+// Returns a substring with all whitespace removed from the front and back of
+// string
+std::string trimWhitespace(const std::string& s)
+{
+    return rtrimWhitespace(ltrimWhitespace(s));
+}
+
+// Returns a substring with all characters the ToTrim returns true removed from
+// the front of string
+template < typename ToTrim >
+std::string ltrim(const std::string& s, ToTrim toTrim)
+{
+    std::string s_(s);
+    while (!s_.empty() && toTrim(s_.front()))
+    {
+        s_.erase(s_.begin());
+    }
+    return s_;
+}
+
+// Returns a substring with all characters the ToTrim returns true removed from
+// the back of string
+template < typename ToTrim >
+std::string rtrim(const std::string& s, ToTrim toTrim)
+{
+    std::string s_(s);
+    while (!s_.empty() && toTrim(s_.back()))
+    {
+        s_.pop_back();
+    }
+    return s_;
+}
+
+// Returns a substring with all characters the ToTrim returns true removed from
+// the front and back of string
+template < typename ToTrim >
+std::string trim(const std::string& s, ToTrim toTrim)
+{
+    return rtrim(ltrim(s, std::ref(toTrim)), std::ref(toTrim));
 }
 
 }  // namespace libx

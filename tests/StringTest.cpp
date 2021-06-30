@@ -8,8 +8,14 @@
 #include "libx/String.hpp"
 #include "libx/Conv.hpp"
 #include "libx/Timer.hpp"
+using libx::ltrim;
+using libx::ltrimWhitespace;
+using libx::rtrim;
+using libx::rtrimWhitespace;
 using libx::split;
 using libx::Timer;
+using libx::trim;
+using libx::trimWhitespace;
 
 #include <iostream>
 #include <string>
@@ -219,6 +225,145 @@ TEST_SUITE("testing join into string")
             std::string s = "libx";
             out           = libx::join(' ', i, f, s);
             CHECK(out == "10 3.330000 libx");
+        }
+    }
+}
+
+TEST_SUITE("testing trim string")
+{
+    TEST_CASE("trim whitespace")
+    {
+        SUBCASE("trim left whitespace")
+        {
+            // empty string after trim
+            CHECK(ltrimWhitespace("") == "");
+            CHECK(ltrimWhitespace(" ") == "");
+            CHECK(ltrimWhitespace("  ") == "");
+
+            // do not trim
+            CHECK(ltrimWhitespace("a") == "a");
+            CHECK(ltrimWhitespace("a ") == "a ");
+            CHECK(ltrimWhitespace("a b\rc\t d   ") == "a b\rc\t d   ");
+
+            // trim the string
+            CHECK(ltrimWhitespace(" a") == "a");
+            CHECK(ltrimWhitespace("       a") == "a");
+            CHECK(ltrimWhitespace("\ra") == "a");
+            CHECK(ltrimWhitespace("\ta") == "a");
+            CHECK(ltrimWhitespace("\na") == "a");
+            CHECK(ltrimWhitespace("\r\t\n a") == "a");
+        }
+        SUBCASE("trim right whitespace")
+        {
+            // empty string after trim
+            CHECK(rtrimWhitespace("") == "");
+            CHECK(rtrimWhitespace(" ") == "");
+            CHECK(rtrimWhitespace("  ") == "");
+
+            // do not trim
+            CHECK(rtrimWhitespace("a") == "a");
+            CHECK(rtrimWhitespace("   a b\rc\t d") == "   a b\rc\t d");
+
+            // trim the string
+            CHECK(rtrimWhitespace("a ") == "a");
+            CHECK(rtrimWhitespace("a     ") == "a");
+            CHECK(rtrimWhitespace("a\r") == "a");
+            CHECK(rtrimWhitespace("a\n") == "a");
+            CHECK(rtrimWhitespace("a\t") == "a");
+            CHECK(rtrimWhitespace("a \r\n \t ") == "a");
+        }
+        SUBCASE("trim left and right whitespace")
+        {
+            // empty string after trim
+            CHECK(trimWhitespace("") == "");
+            CHECK(trimWhitespace(" ") == "");
+            CHECK(trimWhitespace("  ") == "");
+
+            // do not trim
+            CHECK(trimWhitespace("a") == "a");
+            CHECK(trimWhitespace("a b\rc\t d") == "a b\rc\t d");
+
+            // trim left
+            CHECK(trimWhitespace(" a") == "a");
+            CHECK(trimWhitespace("       a") == "a");
+            CHECK(trimWhitespace("\ra") == "a");
+            CHECK(trimWhitespace("\ta") == "a");
+            CHECK(trimWhitespace("\na") == "a");
+            CHECK(trimWhitespace("\r\t\n a") == "a");
+
+            // trim rigth
+            CHECK(trimWhitespace("a ") == "a");
+            CHECK(trimWhitespace("a     ") == "a");
+            CHECK(trimWhitespace("a\r") == "a");
+            CHECK(trimWhitespace("a\n") == "a");
+            CHECK(trimWhitespace("a\t") == "a");
+            CHECK(trimWhitespace("a \r\n \t ") == "a");
+
+            // trim left and right
+            CHECK(trimWhitespace(" \r\t\n a b\r\tc  d \n\t\r  ")
+                  == "a b\r\tc  d");
+        }
+    }
+
+    TEST_CASE("trim other characters")
+    {
+        auto toTrimSemicolon = [](const char c) { return (c == ';'); };
+        auto toTrimAB = [](const char c) { return (c == 'a' || c == 'b'); };
+
+        SUBCASE("trim left")
+        {
+            // empty string after trim
+            CHECK(ltrim("", toTrimSemicolon) == "");
+            CHECK(ltrim(";", toTrimSemicolon) == "");
+
+            // do not trim
+            CHECK(ltrim("abcd", toTrimSemicolon) == "abcd");
+            CHECK(ltrim("abcd;", toTrimSemicolon) == "abcd;");
+            CHECK(ltrim("a;bcd;", toTrimSemicolon) == "a;bcd;");
+
+            // trim the string
+            CHECK(ltrim(";abcd", toTrimSemicolon) == "abcd");
+            CHECK(ltrim(";;;abcd", toTrimSemicolon) == "abcd");
+            CHECK(ltrim("abcd", toTrimAB) == "cd");
+            CHECK(ltrim("abcbad", toTrimAB) == "cbad");
+        }
+        SUBCASE("trim right")
+        {
+            // empty string after trim
+            CHECK(rtrim("", toTrimSemicolon) == "");
+            CHECK(rtrim(";", toTrimSemicolon) == "");
+
+            // do not trim
+            CHECK(rtrim("abcd", toTrimSemicolon) == "abcd");
+            CHECK(rtrim(";abcd", toTrimSemicolon) == ";abcd");
+            CHECK(rtrim(";a;bcd", toTrimSemicolon) == ";a;bcd");
+
+            // trim the string
+            CHECK(rtrim("abcd;", toTrimSemicolon) == "abcd");
+            CHECK(rtrim("abcd;;;", toTrimSemicolon) == "abcd");
+            CHECK(rtrim("cdab", toTrimAB) == "cd");
+            CHECK(rtrim("abcbabcbabba", toTrimAB) == "abcbabc");
+        }
+        SUBCASE("trim left and right")
+        {
+            // empty string after trim
+            CHECK(trim("", toTrimSemicolon) == "");
+            CHECK(trim(";;", toTrimSemicolon) == "");
+
+            // do not trim
+            CHECK(trim("abcd", toTrimSemicolon) == "abcd");
+            CHECK(trim("a;bcd", toTrimSemicolon) == "a;bcd");
+
+            // trim the string
+            CHECK(trim(";abcd", toTrimSemicolon) == "abcd");
+            CHECK(trim(";;;abcd", toTrimSemicolon) == "abcd");
+            CHECK(trim("abcd", toTrimAB) == "cd");
+            CHECK(trim("abcbad", toTrimAB) == "cbad");
+
+            CHECK(trim("abcd;", toTrimSemicolon) == "abcd");
+            CHECK(trim("abcd;;;", toTrimSemicolon) == "abcd");
+            CHECK(trim("cdab", toTrimAB) == "cd");
+            CHECK(trim("abcbabcbabba", toTrimAB) == "cbabc");
         }
     }
 }
