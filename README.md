@@ -54,3 +54,8 @@ Use clang-format to control the code style.
 ```sh
 sh script/check_style.sh
 ```
+
+## Reference
+
+* [threadpool](https://github.com/lzpong/threadpool)
+* [String](https://github.com/facebook/folly)
