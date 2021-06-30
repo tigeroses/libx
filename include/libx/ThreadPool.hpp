@@ -120,7 +120,7 @@ private:
                         std::unique_lock< std::mutex > lock{ _lock };
                         _task_cv.wait(lock, [this] {
                             return !_run || !_tasks.empty();
-                        });  // wait 直到有 task
+                        });  // wait until there is a task
                         if (!_run && _tasks.empty())
                             return;
                         task = std::move(_tasks.front());
