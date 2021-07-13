@@ -4,7 +4,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 set(INCLUDE_PATH ${PROJECT_SOURCE_DIR}/include)
 set(SOURCE_PATH ${PROJECT_SOURCE_DIR}/tests)
 
-set(CMAKE_CXX_FLAGS "-std=c++17 -g -O0 --coverage")
+# set(CMAKE_CXX_FLAGS "-std=c++17 -g -O0 --coverage")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O2")
 
 include_directories(${INCLUDE_PATH})
 
