@@ -16,6 +16,8 @@ using libx::split;
 using libx::Timer;
 using libx::trim;
 using libx::trimWhitespace;
+using libx::startswith;
+using libx::endswith;
 
 #include <iostream>
 #include <string>
@@ -365,5 +367,27 @@ TEST_SUITE("testing trim string")
             CHECK(trim("cdab", toTrimAB) == "cd");
             CHECK(trim("abcbabcbabba", toTrimAB) == "cbabc");
         }
+    }
+}
+
+TEST_SUITE("testing startswith and endswith string")
+{
+    TEST_CASE("simple")
+    {
+        CHECK(!startswith("abcdefg", ""));
+        CHECK(!endswith("abcdefg", ""));
+        CHECK(startswith("abcdefg", "abcdefg"));
+        CHECK(endswith("abcdefg", "abcdefg"));
+        CHECK(!startswith("abcdefg", "abcdefgabcdefg"));
+        CHECK(!endswith("abcdefg", "abcdefgabcdefg"));
+
+        CHECK(startswith("abcdefg", "a"));
+        CHECK(startswith("abcdefg", "abc"));
+        CHECK(!startswith("abcdefg", "ac"));
+        CHECK(endswith("abcdefg", "g"));
+        CHECK(endswith("abcdefg", "efg"));
+        CHECK(!endswith("abcdefg", "ef"));
+
+        CHECK(endswith("output.csv", ".csv"));
     }
 }

@@ -340,4 +340,31 @@ std::string trim(const std::string& s, ToTrim toTrim)
     return rtrim(ltrim(s, std::ref(toTrim)), std::ref(toTrim));
 }
 
+// Check if a string starts with another string
+bool startswith(const std::string& s, const std::string& prefix)
+{
+    if (s.empty() || prefix.empty() || s.size() < prefix.size()) return false;
+
+    for (size_t i = 0; i < prefix.size(); ++i)
+    {
+        if (s.at(i) != prefix.at(i))
+            return false;
+    }
+    return true;
+}
+
+// Check if a string ends with another string
+bool endswith(const std::string& s, const std::string& suffix)
+{
+    if (s.empty() || suffix.empty() || s.size() < suffix.size()) return false;
+
+    size_t start = s.size() - suffix.size();
+    for (size_t i = 0; i < suffix.size(); ++i)
+    {
+        if (s.at(i+start) != suffix.at(i))
+            return false;
+    }
+    return true;
+}
+
 }  // namespace libx

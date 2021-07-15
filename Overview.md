@@ -69,6 +69,20 @@ res = libx::rtrim("abcbad", toTrimAB);
 res = libx::trim("abcbad", toTrimAB);
 ```
 
+### check prefix and suffix
+
+Check if a string starts or ends with another string.
+
+```cpp
+if (libx::startswith("abcdefg", "abc"))
+    // do work
+
+if (libx::endswith(filename, ".txt"))
+    // do work
+else if (libx::endswith(filename, ".csv"))
+    // do work
+```
+
 ## thread pool
 
 ThreadPool is a thread pool for executing parallel tasks.
