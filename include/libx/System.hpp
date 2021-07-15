@@ -18,7 +18,7 @@ namespace libx {
 // Note: can only get stdout from pipe, if you want to get stderr,
 // add " 2>&1" to the back of command.
 // https://linux.die.net/man/3/popen
-int subprocess(const std::string& cmd, std::string& out)
+inline int subprocess(const std::string& cmd, std::string& out)
 {
     FILE* pp = popen(cmd.c_str(), "r");  // make pipe
     if (!pp)

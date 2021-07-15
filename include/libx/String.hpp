@@ -94,12 +94,12 @@ namespace detail
         return false;
     }
 
-    void appendDelim(const char& delim, std::string& out)
+    inline void appendDelim(const char& delim, std::string& out)
     {
         out.append(1, delim);
     }
 
-    void appendDelim(const std::string& delim, std::string& out)
+    inline void appendDelim(const std::string& delim, std::string& out)
     {
         out.append(delim);
     }
@@ -266,7 +266,7 @@ std::string join(const Delim& delim, InputTypes&... input)
 //      auto toTrim = [](const char c) { return (c == 'a' || c == 'b') };
 
 // Returns a substring with all whitespace removed from the front of string
-std::string ltrimWhitespace(const std::string& s)
+inline std::string ltrimWhitespace(const std::string& s)
 {
     std::string s_(s);
     while (true)
@@ -283,7 +283,7 @@ std::string ltrimWhitespace(const std::string& s)
 }
 
 // Returns a substring with all whitespace removed from the back of string
-std::string rtrimWhitespace(const std::string& s)
+inline std::string rtrimWhitespace(const std::string& s)
 {
     std::string s_(s);
     while (true)
@@ -301,7 +301,7 @@ std::string rtrimWhitespace(const std::string& s)
 
 // Returns a substring with all whitespace removed from the front and back of
 // string
-std::string trimWhitespace(const std::string& s)
+inline std::string trimWhitespace(const std::string& s)
 {
     return rtrimWhitespace(ltrimWhitespace(s));
 }
@@ -341,7 +341,7 @@ std::string trim(const std::string& s, ToTrim toTrim)
 }
 
 // Check if a string starts with another string
-bool startswith(const std::string& s, const std::string& prefix)
+inline bool startswith(const std::string& s, const std::string& prefix)
 {
     if (s.empty() || prefix.empty() || s.size() < prefix.size()) return false;
 
@@ -354,7 +354,7 @@ bool startswith(const std::string& s, const std::string& prefix)
 }
 
 // Check if a string ends with another string
-bool endswith(const std::string& s, const std::string& suffix)
+inline bool endswith(const std::string& s, const std::string& suffix)
 {
     if (s.empty() || suffix.empty() || s.size() < suffix.size()) return false;
 
