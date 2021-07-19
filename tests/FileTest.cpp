@@ -19,25 +19,84 @@ TEST_SUITE("testing readFile and writeFile")
 {
     TEST_CASE("readFile")
     {
-        string filename("tmp_read.txt");
+        string filename("tmp_file_simple.txt");
         // Create temp file for reading
         string createFileCmd = libx::join({"echo 'a b c\nd e f\n1 2 3\n' >", filename.c_str()}, " ");
-        string output;
-        int rtn = libx::subprocess(createFileCmd, output);
+        int rtn = libx::subprocess(createFileCmd);
         REQUIRE(rtn == 0);
         
-        // Read by line from temp file
+        SUBCASE("read file by lines")
+        {
+            // Read by line from temp file
+            vector<string> records;
+            auto readLine = [&](string& line) {
+                records.push_back(line);
+            };
+            readFile(filename, readLine);
+            CHECK(records.size() == 3);
+        }
+
+        SUBCASE("read file by tokens")
+        {
+            // Read by tokens from temp file
+            vector<string> records;
+            auto readLine = [&](string& line) {
+                vector<string> res;
+                libx::split(line, ' ', res);
+                for (auto& s : res)
+                    records.push_back(s);
+            };
+            readFile(filename, readLine);
+            CHECK(records.size() == 9);
+        }
+
+        // Remove temp file
+        string removeFileCmd = libx::join({"rm", filename.c_str()}, " ");
+        rtn = libx::subprocess(removeFileCmd);
+        REQUIRE(rtn == 0);
+    }
+
+    TEST_CASE("read file with comment")
+    {
+        string filename("tmp_file_comment.txt");
+        // Create temp file for reading
+        string createFileCmd = libx::join({"echo '#this is comment\na b c\nd e f\n1 2 3\n' >", filename.c_str()}, " ");
+        int rtn = libx::subprocess(createFileCmd);
+        REQUIRE(rtn == 0);
+
         vector<string> records;
         auto readLine = [&](string& line) {
             records.push_back(line);
         };
-        readFile("tmp_read.txt", readLine);
-        CHECK(records.size() == 3);
 
+        SUBCASE("default skip comment")
+        {
+            readFile(filename, readLine);
+            CHECK(records.size() == 3);
+        }
+        SUBCASE("specify comment type")
+        {
+            readFile(filename, readLine, "#");
+            CHECK(records.size() == 3);
+        }
+        SUBCASE("specify comment type")
+        {
+            readFile(filename, readLine, "#t");
+            CHECK(records.size() == 3);
+        }
+        SUBCASE("specify comment type")
+        {
+            readFile(filename, readLine, "#T");
+            CHECK(records.size() == 4);
+        }
+        SUBCASE("use skipLineNum")
+        {
+            readFile(filename, readLine, "-", 1);
+            CHECK(records.size() == 3);
+        }
         // Remove temp file
         string removeFileCmd = libx::join({"rm", filename.c_str()}, " ");
-        output.clear();
-        rtn = libx::subprocess(removeFileCmd, output);
+        rtn = libx::subprocess(removeFileCmd);
         REQUIRE(rtn == 0);
     }
 }

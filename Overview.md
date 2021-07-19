@@ -133,3 +133,26 @@ std::string cmd("ls -l 2>&1");
 std::string out;
 int rtn = libx::subprocess(cmd, out);
 ```
+
+## file IO
+
+### text file
+
+`include <libx/File.hpp>`
+
+#### read text file
+
+Read file line by line, and process each line using the user-specified lambda function
+
+```cpp
+vector<string> records;
+auto readLine = [&](string& line) {
+    records.push_back(line);
+};
+readFile(filename, readLine, "#", 1);
+```
+
+#### write text file
+
+
+

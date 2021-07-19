@@ -40,4 +40,10 @@ inline int subprocess(const std::string& cmd, std::string& out)
     return rtn;
 }
 
+inline int subprocess(const std::string& cmd)
+{
+    std::string out;
+    return libx::subprocess(cmd, out);
+}
+
 } // namespace libx

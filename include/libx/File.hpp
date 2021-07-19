@@ -14,6 +14,11 @@
 namespace libx {
 
 // Read and process data from file
+// filename: input filename
+// processLine: a lambda function for processing one line in file
+// skipPrefix: the comment type to be skipped, default "#"
+// skipLineNum: if there is not exists skipPrefix, you should specify the line number to be skipped
+// It is also skip empty lines in file
 template < typename ProcessLine >
 inline void readFile(const std::string& filename, ProcessLine processLine,
     const std::string& skipPrefix="#", int skipLineNum=0)
