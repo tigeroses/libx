@@ -6,6 +6,7 @@
 
 #include "libx/File.hpp"
 using libx::readFile;
+using libx::writeFile;
 #include "libx/System.hpp"
 #include "libx/String.hpp"
 
@@ -15,8 +16,18 @@ using namespace std;
 
 #include <doctest.h>
 
-TEST_SUITE("testing readFile and writeFile")
+TEST_SUITE("testing readFile")
 {
+    TEST_CASE("file not exsits")
+    {
+        string filename("file_not_exists.txt");
+        vector<string> records;
+        auto readLine = [&](string& line) {
+            records.push_back(line);
+        };
+        CHECK(!readFile(filename, readLine));
+        CHECK(records.size() == 0);
+    }
     TEST_CASE("readFile")
     {
         string filename("tmp_file_simple.txt");
@@ -32,7 +43,7 @@ TEST_SUITE("testing readFile and writeFile")
             auto readLine = [&](string& line) {
                 records.push_back(line);
             };
-            readFile(filename, readLine);
+            CHECK(readFile(filename, readLine));
             CHECK(records.size() == 3);
         }
 
@@ -98,5 +109,64 @@ TEST_SUITE("testing readFile and writeFile")
         string removeFileCmd = libx::join({"rm", filename.c_str()}, " ");
         rtn = libx::subprocess(removeFileCmd);
         REQUIRE(rtn == 0);
+    }
+}
+
+TEST_SUITE("testing writeFile")
+{
+    TEST_CASE("testing writeFile")
+    {
+        string filename("write_file.txt");
+        vector<string> records;
+        auto readLine = [&](string& line) {
+            records.push_back(line);
+        };
+
+        SUBCASE("file not exists")
+        {
+            REQUIRE(writeFile("a b c\nd e f\n", filename));
+
+            CHECK(readFile(filename, readLine));
+            CHECK(records.size() == 2);
+        }
+        SUBCASE("write from start of file")
+        {
+            string createFileCmd = libx::join({"echo 'a b c\nd e f\n1 2 3\n' >", filename.c_str()}, " ");
+            REQUIRE(libx::subprocess(createFileCmd) == 0);
+
+            REQUIRE(writeFile("a b c\nd e f\n", filename));
+
+            CHECK(readFile(filename, readLine));
+            CHECK(records.size() == 2);
+        
+        }
+        SUBCASE("append to file")
+        {
+            string createFileCmd = libx::join({"echo 'a b c\nd e f\n1 2 3\n' >", filename.c_str()}, " ");
+            REQUIRE(libx::subprocess(createFileCmd) == 0);
+
+            REQUIRE(writeFile("a b c\nd e f\n", filename, true));
+
+            CHECK(readFile(filename, readLine));
+            CHECK(records.size() == 5);
+        }
+        SUBCASE("append to file using vector<string>")
+        {
+            string createFileCmd = libx::join({"echo 'a b c\nd e f\n1 2 3\n' >", filename.c_str()}, " ");
+            REQUIRE(libx::subprocess(createFileCmd) == 0);
+
+            vector<string> inputsString{"a b c", "d e f"};
+            REQUIRE(writeFile(inputsString, filename, true));
+
+            vector<int> inputsInt{1, 200};
+            REQUIRE(writeFile(inputsInt, filename, true));
+
+            CHECK(readFile(filename, readLine));
+            CHECK(records.size() == 7);
+        }
+
+        // Remove temp file
+        string removeFileCmd = libx::join({"rm", filename.c_str()}, " ");
+        REQUIRE(libx::subprocess(removeFileCmd) == 0);
     }
 }

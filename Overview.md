@@ -154,5 +154,17 @@ readFile(filename, readLine, "#", 1);
 
 #### write text file
 
+Write data to file, there are two ways:
 
+```cpp
+// 1 input string, seperated by '\n'
+writeFile("a b c\nd e f\n", filename);
+
+// 2 vector of string or numeric types
+// the second value 'ture' means append to file
+vector<string> inputsString{"a b c", "d e f"};
+writeFile(inputsString, filename);
+vector<int> inputsInt{1, 200};
+writeFile(inputsInt, filename, true);
+```
 
