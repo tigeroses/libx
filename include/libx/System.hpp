@@ -6,13 +6,14 @@
 
 #pragma once
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
 
 #include <string>
 
-namespace libx {
+namespace libx
+{
 
 // Executing shell script using popen() and pipe.
 // Note: can only get stdout from pipe, if you want to get stderr,
@@ -46,4 +47,4 @@ inline int subprocess(const std::string& cmd)
     return libx::subprocess(cmd, out);
 }
 
-} // namespace libx
+}  // namespace libx

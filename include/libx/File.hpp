@@ -8,11 +8,12 @@
 
 #include "libx/String.hpp"
 
-#include <string>
 #include <fstream>
+#include <string>
 #include <vector>
 
-namespace libx {
+namespace libx
+{
 
 // Read and process data from file
 // filename: input filename
@@ -21,14 +22,16 @@ namespace libx {
 //      input: one line in file
 //      output: true for continue, false for stopping reading file
 // skipPrefix: the comment type to be skipped, default "#"
-// skipLineNum: if there is not exists skipPrefix, you should specify the line number to be skipped
-// Return false if there is not exists the file, it is also skip empty lines in file
+// skipLineNum: if there is not exists skipPrefix, you should specify the line
+// number to be skipped Return false if there is not exists the file, it is also
+// skip empty lines in file
 template < typename ProcessLine >
 inline bool readFile(const std::string& filename, ProcessLine processLine,
-    const std::string& skipPrefix="#", int skipLineNum=0)
+                     const std::string& skipPrefix = "#", int skipLineNum = 0)
 {
     std::ifstream ifs(filename);
-    if (ifs.fail()) return false;
+    if (ifs.fail())
+        return false;
 
     std::string line;
     // Skip header lines and comment lines
@@ -37,11 +40,13 @@ inline bool readFile(const std::string& filename, ProcessLine processLine,
     while (std::getline(ifs, line))
         if (!line.empty() && !libx::startswith(line, skipPrefix))
             break;
-    
+
     do
     {
-        if (line.empty()) continue;
-        if (!processLine(line)) break;
+        if (line.empty())
+            continue;
+        if (!processLine(line))
+            break;
     } while (std::getline(ifs, line));
 
     ifs.close();
@@ -50,14 +55,15 @@ inline bool readFile(const std::string& filename, ProcessLine processLine,
 
 // Write string to file
 inline bool writeFile(const std::string& str, const std::string& filename,
-    bool append = false)
+                      bool append = false)
 {
     std::ofstream ofs;
     if (append)
         ofs.open(filename, std::ofstream::app);
     else
         ofs.open(filename);
-    if (ofs.fail()) return false;
+    if (ofs.fail())
+        return false;
 
     ofs << str;
 
@@ -66,16 +72,17 @@ inline bool writeFile(const std::string& str, const std::string& filename,
 }
 
 // Write list of data to file
-template< class InputType >
-inline bool writeFile(const std::vector<InputType>& records, const std::string& filename,
-    bool append = false)
+template < class InputType >
+inline bool writeFile(const std::vector< InputType >& records,
+                      const std::string& filename, bool append = false)
 {
     std::ofstream ofs;
     if (append)
         ofs.open(filename, std::ofstream::app);
     else
         ofs.open(filename);
-    if (ofs.fail()) return false;
+    if (ofs.fail())
+        return false;
 
     for (auto& record : records)
         ofs << record << std::endl;
@@ -84,4 +91,4 @@ inline bool writeFile(const std::vector<InputType>& records, const std::string& 
     return true;
 }
 
-} // namespace libx
+}  // namespace libx

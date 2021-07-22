@@ -6,6 +6,7 @@
 
 #pragma once
 
-namespace bio {
+namespace bio
+{
 
-} // namespace bio
+}  // namespace bio

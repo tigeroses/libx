@@ -20,7 +20,7 @@ TEST_SUITE("testing system subprocess")
         {
             string cmd("ls -l");
             string out;
-            int rtn = subprocess(cmd, out);
+            int    rtn = subprocess(cmd, out);
             CHECK(rtn == 0);
             CHECK(!out.empty());
         }
@@ -28,7 +28,7 @@ TEST_SUITE("testing system subprocess")
         {
             string cmd("for i in {1..10}; do echo 'hello';done");
             string out;
-            int rtn = subprocess(cmd, out);
+            int    rtn = subprocess(cmd, out);
             CHECK(rtn == 0);
             string tmp;
             for (int i = 0; i < 10; ++i)
@@ -41,7 +41,7 @@ TEST_SUITE("testing system subprocess")
     {
         string cmd("python -c \"print 'hello world!'\"");
         string out;
-        int rtn = subprocess(cmd, out);
+        int    rtn = subprocess(cmd, out);
         CHECK(rtn == 0);
         CHECK(!out.empty());
         CHECK(out == "hello world!\n");

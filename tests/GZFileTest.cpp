@@ -8,11 +8,12 @@
 
 #include <libx/GZFile.hpp>
 using libx::readGZFile;
-#include <libx/System.hpp>
+using libx::writeGZFile;
 #include <libx/String.hpp>
+#include <libx/System.hpp>
 
-#include <string>
 #include <set>
+#include <string>
 using namespace std;
 
 TEST_SUITE("testing readGZFile")
@@ -31,7 +32,7 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("just read one line")
         {
             string oneline;
-            auto readOneLine = [&](string& line){
+            auto   readOneLine = [&](string& line) {
                 oneline = line;
                 return false;
             };
@@ -41,8 +42,8 @@ TEST_SUITE("testing readGZFile")
 
         SUBCASE("read line by line")
         {
-            vector<string> lines;
-            auto readLines = [&](string& line){
+            vector< string > lines;
+            auto             readLines = [&](string& line) {
                 lines.push_back(line);
                 return true;
             };
@@ -55,9 +56,9 @@ TEST_SUITE("testing readGZFile")
 
         SUBCASE("split each line")
         {
-            set<string> uniqValues;
-            auto readUniqValues = [&](string& line){
-                vector<string> res;
+            set< string > uniqValues;
+            auto          readUniqValues = [&](string& line) {
+                vector< string > res;
                 libx::split(line, ' ', res);
                 for (auto& v : res)
                     uniqValues.insert(v);
@@ -65,6 +66,50 @@ TEST_SUITE("testing readGZFile")
             };
             readGZFile(gzipFile, readUniqValues);
             CHECK(uniqValues.size() == 6);
+        }
+
+        // Remove temp file
+        string removeCmd("rm " + gzipFile);
+        REQUIRE(libx::subprocess(removeCmd) == 0);
+    }
+}
+
+TEST_SUITE("tesing writeGZFile")
+{
+    TEST_CASE("write gz file")
+    {
+        string gzipFile("temp_gz_file.gz");
+        REQUIRE(libx::subprocess("zcat -h 2>&1") == 0);
+        string checkCmd("zcat " + gzipFile);
+        string records;
+
+        SUBCASE("write string")
+        {
+            REQUIRE(writeGZFile("abc\ndefghi\n123\n4567\n", gzipFile));
+
+            // Check write is ok
+            REQUIRE(libx::subprocess(checkCmd, records) == 0);
+            CHECK(records == "abc\ndefghi\n123\n4567\n");
+        }
+        SUBCASE("write vector of string")
+        {
+            vector< string > datas{ "abc", "defghi", "123", "4567" };
+            REQUIRE(writeGZFile(datas, gzipFile));
+
+            // Check write is ok
+            REQUIRE(libx::subprocess(checkCmd, records) == 0);
+            CHECK(records == "abc\ndefghi\n123\n4567\n");
+        }
+        SUBCASE("append mode")
+        {
+            REQUIRE(writeGZFile("abc\ndefghi\n123\n4567\n", gzipFile));
+            vector< string > datas{ "abc", "defghi", "123", "4567" };
+            REQUIRE(writeGZFile(datas, gzipFile, true));
+
+            // Check write is ok
+            REQUIRE(libx::subprocess(checkCmd, records) == 0);
+            CHECK(records
+                  == "abc\ndefghi\n123\n4567\nabc\ndefghi\n123\n4567\n");
         }
 
         // Remove temp file

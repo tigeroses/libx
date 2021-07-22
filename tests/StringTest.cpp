@@ -8,16 +8,16 @@
 #include "libx/String.hpp"
 #include "libx/Conv.hpp"
 #include "libx/Timer.hpp"
+using libx::endswith;
 using libx::ltrim;
 using libx::ltrimWhitespace;
 using libx::rtrim;
 using libx::rtrimWhitespace;
 using libx::split;
+using libx::startswith;
 using libx::Timer;
 using libx::trim;
 using libx::trimWhitespace;
-using libx::startswith;
-using libx::endswith;
 
 #include <iostream>
 #include <string>

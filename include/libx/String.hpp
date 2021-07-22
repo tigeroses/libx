@@ -343,7 +343,8 @@ std::string trim(const std::string& s, ToTrim toTrim)
 // Check if a string starts with another string
 inline bool startswith(const std::string& s, const std::string& prefix)
 {
-    if (s.empty() || prefix.empty() || s.size() < prefix.size()) return false;
+    if (s.empty() || prefix.empty() || s.size() < prefix.size())
+        return false;
 
     for (size_t i = 0; i < prefix.size(); ++i)
     {
@@ -356,12 +357,13 @@ inline bool startswith(const std::string& s, const std::string& prefix)
 // Check if a string ends with another string
 inline bool endswith(const std::string& s, const std::string& suffix)
 {
-    if (s.empty() || suffix.empty() || s.size() < suffix.size()) return false;
+    if (s.empty() || suffix.empty() || s.size() < suffix.size())
+        return false;
 
     size_t start = s.size() - suffix.size();
     for (size_t i = 0; i < suffix.size(); ++i)
     {
-        if (s.at(i+start) != suffix.at(i))
+        if (s.at(i + start) != suffix.at(i))
             return false;
     }
     return true;

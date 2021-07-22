@@ -168,3 +168,7 @@ vector<int> inputsInt{1, 200};
 writeFile(inputsInt, filename, true);
 ```
 
+### gz file
+
+It is same to text file for reading and writing gz file, just 
+use readGZFile() and writeGZFile()
