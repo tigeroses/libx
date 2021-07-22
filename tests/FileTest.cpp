@@ -24,6 +24,7 @@ TEST_SUITE("testing readFile")
         vector<string> records;
         auto readLine = [&](string& line) {
             records.push_back(line);
+            return true;
         };
         CHECK(!readFile(filename, readLine));
         CHECK(records.size() == 0);
@@ -42,6 +43,7 @@ TEST_SUITE("testing readFile")
             vector<string> records;
             auto readLine = [&](string& line) {
                 records.push_back(line);
+                return true;
             };
             CHECK(readFile(filename, readLine));
             CHECK(records.size() == 3);
@@ -56,6 +58,7 @@ TEST_SUITE("testing readFile")
                 libx::split(line, ' ', res);
                 for (auto& s : res)
                     records.push_back(s);
+                return true;
             };
             readFile(filename, readLine);
             CHECK(records.size() == 9);
@@ -78,6 +81,7 @@ TEST_SUITE("testing readFile")
         vector<string> records;
         auto readLine = [&](string& line) {
             records.push_back(line);
+            return true;
         };
 
         SUBCASE("default skip comment")
@@ -120,6 +124,7 @@ TEST_SUITE("testing writeFile")
         vector<string> records;
         auto readLine = [&](string& line) {
             records.push_back(line);
+            return true;
         };
 
         SUBCASE("file not exists")

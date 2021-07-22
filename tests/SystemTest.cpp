@@ -53,6 +53,7 @@ TEST_SUITE("testing system subprocess")
         string out;
         SUBCASE("just get stdout")
         {
+            cmd.append(" 2>/dev/null");
             int rtn = subprocess(cmd, out);
             CHECK(rtn != 0);
             CHECK(out.empty());
@@ -65,6 +66,5 @@ TEST_SUITE("testing system subprocess")
             CHECK(!out.empty());
             CHECK(out == "sh: abcdefg: command not found\n");
         }
-        
     }
 }

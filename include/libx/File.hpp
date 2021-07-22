@@ -17,6 +17,9 @@ namespace libx {
 // Read and process data from file
 // filename: input filename
 // processLine: a lambda function for processing one line in file
+//      for example: auto func = [&](string& line) { return true };
+//      input: one line in file
+//      output: true for continue, false for stopping reading file
 // skipPrefix: the comment type to be skipped, default "#"
 // skipLineNum: if there is not exists skipPrefix, you should specify the line number to be skipped
 // Return false if there is not exists the file, it is also skip empty lines in file
@@ -38,7 +41,7 @@ inline bool readFile(const std::string& filename, ProcessLine processLine,
     do
     {
         if (line.empty()) continue;
-        processLine(line);
+        if (!processLine(line)) break;
     } while (std::getline(ifs, line));
 
     ifs.close();

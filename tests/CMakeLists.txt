@@ -17,7 +17,8 @@ set(EXECUTABLE_OUTPUT_PATH ${INSTALL_PATH})
 add_executable(app_tests ${src})
 
 target_link_libraries(app_tests
-    pthread    
+    pthread
+    z
 )
 
 set_target_properties(app_tests PROPERTIES OUTPUT_NAME "unittest")
