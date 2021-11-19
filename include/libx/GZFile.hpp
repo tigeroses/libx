@@ -27,7 +27,7 @@ namespace detail
     static char          GZ_LINE_BUFF[GZ_LINE_LEN];
     static char          GZ_NEW_LINE[1] = { '\n' };
 
-    bool getline(gzFile f, std::string& line)
+    inline bool getline(gzFile f, std::string& line)
     {
         if (gzgets(f, GZ_LINE_BUFF, GZ_LINE_LEN) == Z_NULL)
         {

@@ -10,7 +10,6 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -O2")
 include_directories(${INCLUDE_PATH})
 
 aux_source_directory(. src)
-# set(src DIR_SRCS)
 
 set(EXECUTABLE_OUTPUT_PATH ${INSTALL_PATH})
 
