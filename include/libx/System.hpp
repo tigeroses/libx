@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <random>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -63,6 +64,35 @@ inline bool compareFileTime(const std::string firstFile, const std::string secon
 {
     fs::path p1(firstFile), p2(secondFile);
     return compareFileTime(p1, p2);
+}
+
+// Generate random string include "0-9A-Za-z"
+inline std::string genRandomString(int len)
+{
+    std::string res;
+
+    std::random_device         rd;
+    std::default_random_engine random(rd());
+    for (int i = 0; i < len; i++)
+    {
+        char tmp = random() % 62;
+        if (tmp < 10)
+        {
+            tmp += '0';
+        }
+        else if (tmp < 36)
+        {
+            tmp -= 10;
+            tmp += 'A';
+        }
+        else
+        {
+            tmp -= 36;
+            tmp += 'a';
+        }
+        res += tmp;
+    }
+    return res;
 }
 
 }  // namespace libx

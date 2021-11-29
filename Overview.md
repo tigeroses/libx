@@ -151,6 +151,15 @@ else
 }
 ```
 
+### generate random string
+
+Generate random string include "0-9A-Za-z"
+
+```cpp
+int len = 10;
+string s2 = libx::genRandomString(len);
+```
+
 ## file IO
 
 ### text file

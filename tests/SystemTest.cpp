@@ -103,3 +103,29 @@ TEST_SUITE("testing system compareFileTime")
         fs::remove(f2);
     }
 }
+
+TEST_SUITE("testing system genRandomString")
+{
+    TEST_CASE("genRandomString")
+    {
+        SUBCASE("normal")
+        {
+            int len = 10;
+            string s1 = libx::genRandomString(len);
+            string s2 = libx::genRandomString(len);
+
+            REQUIRE(s1.size() == len);
+            REQUIRE(s2.size() == len);
+            REQUIRE(s1 != s2);
+            for (auto& s : {s1, s2})
+            {
+                for (auto& c : s)
+                {
+                    bool validChar = (48 <= c && c <= 57) || (65 <= c && c <= 90) ||
+                        (97 <= c && c <= 122);
+                    CHECK(validChar);
+                }
+            }
+        }
+    }
+}
