@@ -134,6 +134,23 @@ std::string out;
 int rtn = libx::subprocess(cmd, out);
 ```
 
+### compare last write time of two files
+
+```cpp
+ofstream(f1.c_str()).put('a');
+std::this_thread::sleep_for(std::chrono::milliseconds(100));
+ofstream(f2.c_str()).put('b');
+
+if (libx::compareFileTime(f1, f2))
+{
+    cout<<"make sense, f1 older than f2";
+}
+else
+{
+    cout<<"some thing wrong";
+}
+```
+
 ## file IO
 
 ### text file

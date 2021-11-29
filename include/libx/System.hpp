@@ -10,7 +10,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <iostream>
 #include <string>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace libx
 {
@@ -45,6 +48,21 @@ inline int subprocess(const std::string& cmd)
 {
     std::string out;
     return libx::subprocess(cmd, out);
+}
+
+// Compare last write time of two files
+// Return true if first file is older than second file
+inline bool compareFileTime(const fs::path& firstFile, const fs::path& secondFile)
+{
+    auto     t1 = fs::last_write_time(firstFile);
+    auto     t2 = fs::last_write_time(secondFile);
+    return (std::chrono::duration_cast< std::chrono::milliseconds >(t1 - t2).count() <= 0);
+}
+
+inline bool compareFileTime(const std::string firstFile, const std::string secondFile)
+{
+    fs::path p1(firstFile), p2(secondFile);
+    return compareFileTime(p1, p2);
 }
 
 }  // namespace libx

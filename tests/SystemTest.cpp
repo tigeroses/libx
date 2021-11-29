@@ -8,6 +8,8 @@
 using libx::subprocess;
 
 #include <string>
+#include <fstream>
+#include <thread>
 using namespace std;
 
 #include <doctest.h>
@@ -66,5 +68,38 @@ TEST_SUITE("testing system subprocess")
             CHECK(!out.empty());
             CHECK(out == "sh: abcdefg: command not found\n");
         }
+    }
+}
+
+TEST_SUITE("testing system compareFileTime")
+{
+    TEST_CASE("normal test")
+    {
+        fs::path p("/dev/shm");
+        fs::path f1 = p / "file1";
+        fs::path f2 = p / "file2";
+
+        SUBCASE("same time")
+        {
+            ofstream(f1.c_str()).put('a'); 
+            ofstream(f2.c_str()).put('b');
+
+            CHECK(libx::compareFileTime(f1, f2));
+            CHECK(libx::compareFileTime(f2, f1));
+        }
+        SUBCASE("sleep between file creation")
+        {
+            ofstream(f1.c_str()).put('a');
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            
+            ofstream(f2.c_str()).put('b');
+
+            CHECK(libx::compareFileTime(f1, f2));
+            CHECK(!libx::compareFileTime(f2, f1));
+        }
+        
+        fs::remove(f1);
+        fs::remove(f2);
     }
 }
