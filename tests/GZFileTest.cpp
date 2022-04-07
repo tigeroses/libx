@@ -22,7 +22,7 @@ TEST_SUITE("testing readGZFile")
     {
         // Create a temp gz file
         string textFile("temp_gz_file.txt");
-        string createFileCmd("echo 'a b c\nd\ne f\n' > " + textFile);
+        string createFileCmd("echo '#this is comment\na b c\nd\ne f\n' > " + textFile);
         REQUIRE(libx::subprocess(createFileCmd) == 0);
         string gzipFile(textFile + ".gz");
         string compressCmd("gzip -fq " + textFile);
@@ -66,6 +66,34 @@ TEST_SUITE("testing readGZFile")
             };
             readGZFile(gzipFile, readUniqValues);
             CHECK(uniqValues.size() == 6);
+        }
+
+        SUBCASE("split each line with skipLineNum")
+        {
+            set< string > uniqValues;
+            auto          readUniqValues = [&](string& line) {
+                vector< string > res;
+                libx::split(line, ' ', res);
+                for (auto& v : res)
+                    uniqValues.insert(v);
+                return true;
+            };
+            readGZFile(gzipFile, readUniqValues, "#", 1);
+            CHECK(uniqValues.size() == 3);
+        }
+
+        SUBCASE("split each line with skipLineNum")
+        {
+            set< string > uniqValues;
+            auto          readUniqValues = [&](string& line) {
+                vector< string > res;
+                libx::split(line, ' ', res);
+                for (auto& v : res)
+                    uniqValues.insert(v);
+                return true;
+            };
+            readGZFile(gzipFile, readUniqValues, "#", 2);
+            CHECK(uniqValues.size() == 2);
         }
 
         // Remove temp file

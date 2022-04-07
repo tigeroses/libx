@@ -69,11 +69,12 @@ inline bool readGZFile(const std::string& filename, ProcessLine processLine,
 
     std::string line;
     // Skip header lines and comment lines
-    while (skipLineNum-- > 0)
-        detail::getline(fh, line);
     while (detail::getline(fh, line))
         if (!line.empty() && !libx::startswith(line, skipPrefix))
             break;
+    // Skip header lines after comments
+    while (skipLineNum-- > 0)
+        detail::getline(fh, line);
 
     do
     {

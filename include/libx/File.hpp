@@ -35,11 +35,12 @@ inline bool readFile(const std::string& filename, ProcessLine processLine,
 
     std::string line;
     // Skip header lines and comment lines
-    while (skipLineNum-- > 0)
-        std::getline(ifs, line);
     while (std::getline(ifs, line))
         if (!line.empty() && !libx::startswith(line, skipPrefix))
             break;
+    // Skip header lines after comments
+    while (skipLineNum-- > 0)
+        std::getline(ifs, line);
 
     do
     {

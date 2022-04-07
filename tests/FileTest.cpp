@@ -113,6 +113,11 @@ TEST_SUITE("testing readFile")
             readFile(filename, readLine, "-", 1);
             CHECK(records.size() == 3);
         }
+        SUBCASE("use skipLineNum and comment")
+        {
+            readFile(filename, readLine, "#", 1);
+            CHECK(records.size() == 2);
+        }
         // Remove temp file
         string removeFileCmd = libx::join({ "rm", filename.c_str() }, " ");
         rtn                  = libx::subprocess(removeFileCmd);
