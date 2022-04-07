@@ -6,6 +6,9 @@
 
 #include "libx/System.hpp"
 using libx::subprocess;
+using libx::getSystemMemory;
+using libx::getProcessMemory;
+using libx::getSelfMemory;
 
 #include <string>
 #include <fstream>
@@ -127,5 +130,30 @@ TEST_SUITE("testing system genRandomString")
                 }
             }
         }
+    }
+}
+
+TEST_SUITE("testing system memory")
+{
+    TEST_CASE("example")
+    {
+        CHECK(getSystemMemory() > 0);
+    }
+}
+
+TEST_SUITE("testing process memory")
+{
+    TEST_CASE("self memory")
+    {
+        CHECK(getSelfMemory() == 0);
+    }
+    TEST_CASE("other process memory")
+    {
+        double vm, pm;
+        std::string unit("BYTE");
+        int pid = 1; // init process, it always exists
+        getProcessMemory(vm, pm, unit, pid);
+        CHECK(pm > 0);
+        CHECK(vm > 0);
     }
 }
