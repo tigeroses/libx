@@ -22,7 +22,8 @@ TEST_SUITE("testing readGZFile")
     {
         // Create a temp gz file
         string textFile("temp_gz_file.txt");
-        string createFileCmd("echo '#this is comment\na b c\nd\ne f\n' > " + textFile);
+        string createFileCmd("echo '#this is comment\na b c\nd\ne f\n' > "
+                             + textFile);
         REQUIRE(libx::subprocess(createFileCmd) == 0);
         string gzipFile(textFile + ".gz");
         string compressCmd("gzip -fq " + textFile);

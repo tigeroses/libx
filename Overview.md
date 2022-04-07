@@ -160,6 +160,31 @@ int len = 10;
 string s2 = libx::genRandomString(len);
 ```
 
+### get system memory
+
+Get system maximum memory by read system file '/proc/meminfo'
+
+```cpp
+int systemMem = libx::getSystemMemory();
+```
+
+### get process memory
+
+Get process memory with pid.
+
+```cpp
+double      vm, pm;
+std::string unit("BYTE"); // support "BYTE" "KB" "MB" "GB"
+int         pid = 1;  // init process, it always exists
+libx::getProcessMemory(vm, pm, unit, pid);
+```
+
+Get self(current process) memory by wrapping "getProcessMemory()"
+
+```cpp
+double usedMem = libx::getSelfMemory();
+```
+
 ## file IO
 
 ### text file

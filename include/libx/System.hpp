@@ -19,10 +19,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <iostream>
-#include <string>
-#include <random>
 #include <filesystem>
+#include <iostream>
+#include <random>
+#include <string>
 namespace fs = std::filesystem;
 
 #include "libx/File.hpp"
@@ -64,14 +64,18 @@ inline int subprocess(const std::string& cmd)
 
 // Compare last write time of two files
 // Return true if first file is older than second file
-inline bool compareFileTime(const fs::path& firstFile, const fs::path& secondFile)
+inline bool compareFileTime(const fs::path& firstFile,
+                            const fs::path& secondFile)
 {
-    auto     t1 = fs::last_write_time(firstFile);
-    auto     t2 = fs::last_write_time(secondFile);
-    return (std::chrono::duration_cast< std::chrono::milliseconds >(t1 - t2).count() <= 0);
+    auto t1 = fs::last_write_time(firstFile);
+    auto t2 = fs::last_write_time(secondFile);
+    return (
+        std::chrono::duration_cast< std::chrono::milliseconds >(t1 - t2).count()
+        <= 0);
 }
 
-inline bool compareFileTime(const std::string firstFile, const std::string secondFile)
+inline bool compareFileTime(const std::string firstFile,
+                            const std::string secondFile)
 {
     fs::path p1(firstFile), p2(secondFile);
     return compareFileTime(p1, p2);
@@ -106,7 +110,7 @@ inline std::string genRandomString(int len)
     return res;
 }
 
-// Get system memory by reads system file '/proc/meminfo',
+// Get system memory by read system file '/proc/meminfo',
 // the format of first line: "MemTotal:       32263508 kB"
 // the memory unit is GB,
 // return negative value when something wrong, positive value
@@ -114,9 +118,9 @@ inline std::string genRandomString(int len)
 inline int getSystemMemory()
 {
     // set default memory as 64GB
-    int    res = -1;
+    int         res = -1;
     std::string filename("/proc/meminfo");
-    auto   parseTotalMemory = [&](std::string& line) {
+    auto        parseTotalMemory = [&](std::string& line) {
         std::vector< std::string > vec;
         libx::split(line, ' ', vec);
         try
@@ -138,13 +142,16 @@ inline int getSystemMemory()
 // Parameters:
 //  pid: default -1 for current Process, else Process ID
 //  unit: default BYTE, support "BYTE" "KB" "MB" "GB"
-inline void getProcessMemory(double& virtualMem, double& physicalMem, std::string unit="BYTE", int processID = -1)
+inline void getProcessMemory(double& virtualMem, double& physicalMem,
+                             std::string unit = "BYTE", int processID = -1)
 {
-    virtualMem     = 0.0;
+    virtualMem  = 0.0;
     physicalMem = 0.0;
 
     // 'file' stat seems to give the most reliable results
-    std::string filename = (processID < 0) ? "/proc/self/stat" : "/proc/"+std::to_string(processID)+"/stat";
+    std::string filename = (processID < 0)
+                               ? "/proc/self/stat"
+                               : "/proc/" + std::to_string(processID) + "/stat";
     std::ifstream stat_stream(filename, std::ios_base::in);
 
     // dummy vars for leading entries in stat that we don't care about
@@ -155,31 +162,32 @@ inline void getProcessMemory(double& virtualMem, double& physicalMem, std::strin
 
     // the two fields we want
     unsigned long vsize;
-    long rss;
+    long          rss;
 
     stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
-                >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
-                >> utime >> stime >> cutime >> cstime >> priority >> nice
-                >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
+        >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt >> utime
+        >> stime >> cutime >> cstime >> priority >> nice >> O >> itrealvalue
+        >> starttime >> vsize >> rss;  // don't care about the rest
 
     stat_stream.close();
 
-    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-    virtualMem     = vsize / 1024.0;
-    physicalMem = rss * page_size_kb;
+    // in case x86-64 is configured to use 2MB pages
+    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024;
+    virtualMem        = vsize / 1024.0;
+    physicalMem       = rss * page_size_kb;
 
     // unit conversion
     int div = 1.0;
-    if (unit.empty()) 
+    if (unit.empty())
         unit = "BYTE";
     std::transform(unit.begin(), unit.end(), unit.begin(), ::toupper);
     if (unit[0] == 'K')
         div *= 1024;
     if (unit[0] == 'M')
-        div *= 1024*1024;
+        div *= 1024 * 1024;
     if (unit[0] == 'G')
-        div *= 1024*1024*1024;
-    
+        div *= 1024 * 1024 * 1024;
+
     virtualMem /= div;
     physicalMem /= div;
 }
@@ -187,9 +195,9 @@ inline void getProcessMemory(double& virtualMem, double& physicalMem, std::strin
 // Get physical memory of current Process, in GB unit
 inline int getSelfMemory()
 {
-    double vm, pm;
+    double      vm, pm;
     std::string unit("GB");
-    int pid = -1;
+    int         pid = -1;
     getProcessMemory(vm, pm, unit, pid);
     return pm;
 }

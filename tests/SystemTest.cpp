@@ -5,13 +5,13 @@
  */
 
 #include "libx/System.hpp"
-using libx::subprocess;
-using libx::getSystemMemory;
 using libx::getProcessMemory;
 using libx::getSelfMemory;
+using libx::getSystemMemory;
+using libx::subprocess;
 
-#include <string>
 #include <fstream>
+#include <string>
 #include <thread>
 using namespace std;
 
@@ -84,7 +84,7 @@ TEST_SUITE("testing system compareFileTime")
 
         SUBCASE("same time")
         {
-            ofstream(f1.c_str()).put('a'); 
+            ofstream(f1.c_str()).put('a');
             ofstream(f2.c_str()).put('b');
 
             CHECK(libx::compareFileTime(f1, f2));
@@ -95,13 +95,13 @@ TEST_SUITE("testing system compareFileTime")
             ofstream(f1.c_str()).put('a');
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            
+
             ofstream(f2.c_str()).put('b');
 
             CHECK(libx::compareFileTime(f1, f2));
             CHECK(!libx::compareFileTime(f2, f1));
         }
-        
+
         fs::remove(f1);
         fs::remove(f2);
     }
@@ -113,19 +113,20 @@ TEST_SUITE("testing system genRandomString")
     {
         SUBCASE("normal")
         {
-            int len = 10;
-            string s1 = libx::genRandomString(len);
-            string s2 = libx::genRandomString(len);
+            int    len = 10;
+            string s1  = libx::genRandomString(len);
+            string s2  = libx::genRandomString(len);
 
             REQUIRE(s1.size() == len);
             REQUIRE(s2.size() == len);
             REQUIRE(s1 != s2);
-            for (auto& s : {s1, s2})
+            for (auto& s : { s1, s2 })
             {
                 for (auto& c : s)
                 {
-                    bool validChar = (48 <= c && c <= 57) || (65 <= c && c <= 90) ||
-                        (97 <= c && c <= 122);
+                    bool validChar = (48 <= c && c <= 57)
+                                     || (65 <= c && c <= 90)
+                                     || (97 <= c && c <= 122);
                     CHECK(validChar);
                 }
             }
@@ -149,9 +150,9 @@ TEST_SUITE("testing process memory")
     }
     TEST_CASE("other process memory")
     {
-        double vm, pm;
+        double      vm, pm;
         std::string unit("BYTE");
-        int pid = 1; // init process, it always exists
+        int         pid = 1;  // init process, it always exists
         getProcessMemory(vm, pm, unit, pid);
         CHECK(pm > 0);
         CHECK(vm > 0);
