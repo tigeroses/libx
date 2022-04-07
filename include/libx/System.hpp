@@ -141,9 +141,9 @@ inline int getSystemMemory()
 // Get memory usage of Process by read system file '/proc/$PID/stat'
 // Parameters:
 //  pid: default -1 for current Process, else Process ID
-//  unit: default BYTE, support "BYTE" "KB" "MB" "GB"
+//  unit: default "KB", support "KB" "MB" "GB"
 inline void getProcessMemory(double& virtualMem, double& physicalMem,
-                             std::string unit = "BYTE", int processID = -1)
+                             std::string unit = "KB", int processID = -1)
 {
     virtualMem  = 0.0;
     physicalMem = 0.0;
@@ -179,14 +179,12 @@ inline void getProcessMemory(double& virtualMem, double& physicalMem,
     // unit conversion
     int div = 1.0;
     if (unit.empty())
-        unit = "BYTE";
+        unit = "K";
     std::transform(unit.begin(), unit.end(), unit.begin(), ::toupper);
-    if (unit[0] == 'K')
-        div *= 1024;
     if (unit[0] == 'M')
-        div *= 1024 * 1024;
+        div *= 1024;
     if (unit[0] == 'G')
-        div *= 1024 * 1024 * 1024;
+        div *= 1024 * 1024;
 
     virtualMem /= div;
     physicalMem /= div;

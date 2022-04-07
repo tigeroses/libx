@@ -151,7 +151,7 @@ TEST_SUITE("testing process memory")
     TEST_CASE("other process memory")
     {
         double      vm, pm;
-        std::string unit("BYTE");
+        std::string unit("KB");
         int         pid = 1;  // init process, it always exists
         getProcessMemory(vm, pm, unit, pid);
         CHECK(pm > 0);

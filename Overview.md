@@ -174,7 +174,7 @@ Get process memory with pid.
 
 ```cpp
 double      vm, pm;
-std::string unit("BYTE"); // support "BYTE" "KB" "MB" "GB"
+std::string unit("KB"); // support "KB" "MB" "GB"
 int         pid = 1;  // init process, it always exists
 libx::getProcessMemory(vm, pm, unit, pid);
 ```
