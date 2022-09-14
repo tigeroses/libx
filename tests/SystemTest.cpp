@@ -146,7 +146,8 @@ TEST_SUITE("testing process memory")
 {
     TEST_CASE("self memory")
     {
-        CHECK(getSelfMemory() == 0);
+        // unit of 0.1 is GB
+        CHECK(getSelfMemory() < 0.1);
     }
     TEST_CASE("other process memory")
     {

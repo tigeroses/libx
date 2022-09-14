@@ -191,7 +191,7 @@ inline void getProcessMemory(double& virtualMem, double& physicalMem,
 }
 
 // Get physical memory of current Process, in GB unit
-inline int getSelfMemory()
+inline double getSelfMemory()
 {
     double      vm, pm;
     std::string unit("GB");
