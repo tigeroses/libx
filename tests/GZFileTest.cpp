@@ -33,7 +33,8 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("just read one line")
         {
             string oneline;
-            auto   readOneLine = [&](string& line) {
+            auto   readOneLine = [&](string& line)
+            {
                 oneline = line;
                 return false;
             };
@@ -44,7 +45,8 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("read line by line")
         {
             vector< string > lines;
-            auto             readLines = [&](string& line) {
+            auto             readLines = [&](string& line)
+            {
                 lines.push_back(line);
                 return true;
             };
@@ -58,7 +60,8 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("split each line")
         {
             set< string > uniqValues;
-            auto          readUniqValues = [&](string& line) {
+            auto          readUniqValues = [&](string& line)
+            {
                 vector< string > res;
                 libx::split(line, ' ', res);
                 for (auto& v : res)
@@ -72,7 +75,8 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("split each line with skipLineNum")
         {
             set< string > uniqValues;
-            auto          readUniqValues = [&](string& line) {
+            auto          readUniqValues = [&](string& line)
+            {
                 vector< string > res;
                 libx::split(line, ' ', res);
                 for (auto& v : res)
@@ -86,7 +90,8 @@ TEST_SUITE("testing readGZFile")
         SUBCASE("split each line with skipLineNum")
         {
             set< string > uniqValues;
-            auto          readUniqValues = [&](string& line) {
+            auto          readUniqValues = [&](string& line)
+            {
                 vector< string > res;
                 libx::split(line, ' ', res);
                 for (auto& v : res)

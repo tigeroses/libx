@@ -120,7 +120,8 @@ inline int getSystemMemory()
     // set default memory as 64GB
     int         res = -1;
     std::string filename("/proc/meminfo");
-    auto        parseTotalMemory = [&](std::string& line) {
+    auto        parseTotalMemory = [&](std::string& line)
+    {
         std::vector< std::string > vec;
         libx::split(line, ' ', vec);
         try
@@ -149,9 +150,9 @@ inline void getProcessMemory(double& virtualMem, double& physicalMem,
     physicalMem = 0.0;
 
     // 'file' stat seems to give the most reliable results
-    std::string filename = (processID < 0)
-                               ? "/proc/self/stat"
-                               : "/proc/" + std::to_string(processID) + "/stat";
+    std::string   filename = (processID < 0)
+                                 ? "/proc/self/stat"
+                                 : "/proc/" + std::to_string(processID) + "/stat";
     std::ifstream stat_stream(filename, std::ios_base::in);
 
     // dummy vars for leading entries in stat that we don't care about

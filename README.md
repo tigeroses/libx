@@ -10,11 +10,13 @@ os: centos 7
 
 librarys:
 
-| name    | version | function           |
-| ------- | ------- | ------------------ |
-| cmake   | 3.17.2  | build the software |
-| gcc     | 9.1.0   | build cpp code     |
-| doctest | 2.3.7   | unittest           |
+| name         | version | function           |
+| ------------ | ------- | ------------------ |
+| cmake        | 3.17.2  | build the software |
+| gcc          | 9.1.0   | build cpp code     |
+| doctest      | 2.3.7   | unittest           |
+| clang-format | 15.0.7  | format cpp code    |
+| python       | 3.8     | do some test       |
 
 ## Compile
 

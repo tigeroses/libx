@@ -44,7 +44,7 @@ TEST_SUITE("testing system subprocess")
 
     TEST_CASE("call python")
     {
-        string cmd("python -c \"print 'hello world!'\"");
+        string cmd("python3 -c \"print('hello world!')\"");
         string out;
         int    rtn = subprocess(cmd, out);
         CHECK(rtn == 0);

@@ -150,6 +150,30 @@ TEST_CASE("testing function split fixed")
         CHECK(c == 23333333333);
         CHECK(d == "abc");
     }
+
+    SUBCASE("use part of raw data")
+    {
+        string    in = "1:2.0:23333333333:abc";
+        int       a(0);
+        float     b(0);
+        long long c(0);
+        CHECK(split(in, ':', a, b, c));
+        CHECK(a == 1);
+        CHECK(b == 2.0);
+        CHECK(c == 23333333333);
+    }
+
+    SUBCASE("use out of the data range")
+    {
+        string    in = "1:2.0";
+        int       a(0);
+        float     b(0);
+        long long c(1);
+        CHECK(split(in, ':', a, b, c));
+        CHECK(a == 1);
+        CHECK(b == 2.0);
+        CHECK(c == 1);
+    }
 }
 
 TEST_CASE("testing performance of split()" * doctest::skip(true))

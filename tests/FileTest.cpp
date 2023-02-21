@@ -22,7 +22,8 @@ TEST_SUITE("testing readFile")
     {
         string           filename("file_not_exists.txt");
         vector< string > records;
-        auto             readLine = [&](string& line) {
+        auto             readLine = [&](string& line)
+        {
             records.push_back(line);
             return true;
         };
@@ -42,7 +43,8 @@ TEST_SUITE("testing readFile")
         {
             // Read by line from temp file
             vector< string > records;
-            auto             readLine = [&](string& line) {
+            auto             readLine = [&](string& line)
+            {
                 records.push_back(line);
                 return true;
             };
@@ -54,7 +56,8 @@ TEST_SUITE("testing readFile")
         {
             // Read by tokens from temp file
             vector< string > records;
-            auto             readLine = [&](string& line) {
+            auto             readLine = [&](string& line)
+            {
                 vector< string > res;
                 libx::split(line, ' ', res);
                 for (auto& s : res)
@@ -83,7 +86,8 @@ TEST_SUITE("testing readFile")
         REQUIRE(rtn == 0);
 
         vector< string > records;
-        auto             readLine = [&](string& line) {
+        auto             readLine = [&](string& line)
+        {
             records.push_back(line);
             return true;
         };
@@ -131,7 +135,8 @@ TEST_SUITE("testing writeFile")
     {
         string           filename("write_file.txt");
         vector< string > records;
-        auto             readLine = [&](string& line) {
+        auto             readLine = [&](string& line)
+        {
             records.push_back(line);
             return true;
         };

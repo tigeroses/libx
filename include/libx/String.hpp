@@ -69,10 +69,15 @@ namespace detail
     bool splitFixed(const std::string& str, const Delim& delim,
                     OutputType& output)
     {
-        if (std::string::npos != str.find(delim))
-            return false;
-
-        output = libx::to< OutputType >(str);
+        size_t cut = str.find(delim);
+        // incase data remaining
+        if (cut != std::string::npos)
+        {
+            std::string head(str.begin(), str.begin() + cut);
+            output = libx::to< OutputType >(head);
+        }
+        else
+            output = libx::to< OutputType >(str);
         return true;
     }
 
@@ -82,7 +87,7 @@ namespace detail
     {
         size_t cut = str.find(delim);
         if (cut == std::string::npos)
-            return false;
+            return splitFixed(str, delim, outHead);
 
         std::string head(str.begin(), str.begin() + cut);
         std::string tail(str.begin() + cut + delimSize(delim), str.end());

@@ -112,25 +112,28 @@ private:
     {
         while (size-- > 0)
         {
-            _pool.emplace_back([this] {
-                while (_run)
+            _pool.emplace_back(
+                [this]
                 {
-                    Task task;  // get a task to be executed
+                    while (_run)
                     {
-                        std::unique_lock< std::mutex > lock{ _lock };
-                        _task_cv.wait(lock, [this] {
-                            return !_run || !_tasks.empty();
-                        });  // wait until there is a task
-                        if (!_run && _tasks.empty())
-                            return;
-                        task = std::move(_tasks.front());
-                        _tasks.pop();
+                        Task task;  // get a task to be executed
+                        {
+                            std::unique_lock< std::mutex > lock{ _lock };
+                            _task_cv.wait(lock,
+                                          [this] {
+                                              return !_run || !_tasks.empty();
+                                          });  // wait until there is a task
+                            if (!_run && _tasks.empty())
+                                return;
+                            task = std::move(_tasks.front());
+                            _tasks.pop();
+                        }
+                        _idlThrNum--;
+                        task();  // execute the task
+                        _idlThrNum++;
                     }
-                    _idlThrNum--;
-                    task();  // execute the task
-                    _idlThrNum++;
-                }
-            });
+                });
             _idlThrNum++;
         }
     }
