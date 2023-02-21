@@ -27,8 +27,10 @@ $ export CXX=/path/to/gcc-9.1.0/bin/g++
 $ export CPLUS_INCLUDE_PATH=/path/to/doctest/include:$CPLUS_INCLUDE_PATH
 # compile with cmake
 $ mkdir -p build && cd build
-$ cmake .. -DINSTALL_PATH=/path/to/source/bin
+$ cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/install/libx-1.0
 $ make -j 8
+# install header files if need, install path is ${CMAKE_INSTALL_PREFIX}
+$ make install
 ```
 
 ## Test
